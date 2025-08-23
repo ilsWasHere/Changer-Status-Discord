@@ -3,119 +3,67 @@ import time
 import os
 from colorama import init, Fore
 
-def userinfo(token):
-    header = {
-        'authorization': token
-    }
-    r = requests.get("https://discord.com/api/v10/users/@me", headers=header)
-    if r.status_code == 200:
-        user_info = r.json()
-        return user_info["username"], True
-    else:
-        return "Invalid token", False
-
-def change_status(token, message, status):
-    header = {
-        'authorization': token
-    }
-
-    singapore = requests.get("https://discord.com/api/v10/users/@me/settings", headers=header).json()
-
-    singapore2 = singapore.get("custom_status")
-    if not isinstance(singapore2, dict):
-        singapore2 = {}
-
-    singapore2["text"] = message
-
-    activities = singapore.get("activities", [])
-    
-    if status == "watching":
-        activities = [{
-            "name": message,
-            "type": 3
-        }]
-    else:
-        activities = [{
-            "name": message,
-            "type": 0  
-        }]
-    
-    jsonData = {
-        "custom_status": singapore2,
-        "activities": activities,
-        "status": status
-    }
-
-    r = requests.patch("https://discord.com/api/v10/users/@me/settings", headers=header, json=jsonData)
-    return r.status_code
+init(autoreset=True)
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def color(text, color_code):
-    return f"{color_code}{text}{Fore.RESET}"
-
 def banner():
     clear_console()
-
     print(f"""{Fore.RED}
+   ▄████████ ███▄▄▄▄       ███             ▄██████▄     ▄████████ ███▄▄▄▄      ▄██████▄  
+  ███    ███ ███▀▀▀██▄ ▀█████████▄        ███    ███   ███    ███ ███▀▀▀██▄   ███    ███ 
+  ███    █▀  ███   ███    ▀███▀▀██        ███    █▀    ███    ███ ███   ███   ███    █▀  
+ ▄███▄▄▄     ███   ███     ███   ▀       ▄███          ███    ███ ███   ███  ▄███        
+▀▀███▀▀▀     ███   ███     ███          ▀▀███ ████▄  ▀███████████ ███   ███ ▀▀███ ████▄  
+  ███        ███   ███     ███            ███    ███   ███    ███ ███   ███   ███    ███ 
+  ███        ███   ███     ███            ███    ███   ███    ███ ███   ███   ███    ███ 
+  ███         ▀█   █▀     ▄████▀          ████████▀    ███    █▀   ▀█   █▀    ████████▀  
 
-   $$\           $$$$$$\            $$\  $$$$$$\  
- $$$$$$\        $$  __$$\           $$ |$$  __$$\ 
-{Fore.LIGHTRED_EX}$$  __$$\       $$ /  \__| $$$$$$\  $$ |$$ /  \__|
-{Fore.RED}$$ /  \__|      \$$$$$$\  $$  __$$\ $$ |$$$$\     
-{Fore.LIGHTRED_EX}\$$$$$$\         \____$$\ $$$$$$$$ |$$ |$$  _|    
-{Fore.RED} \___ $$\       $$\   $$ |$$   ____|$$ |$$ |      
-$$\  \$$ |      \$$$$$$  |\$$$$$$$\ $$ |$$ |      
-\$$$$$$  |       \______/  \_______|\__|\__|      
- \_$$  _/                                         
+                  {Fore.MAGENTA}Fnt Squad
+             {Fore.CYAN}Created by: Slfz
+{Fore.RESET}""")
 
-       {Fore.MAGENTA}Discord Status Changer by: ils
-{Fore.RESET}
-""")
+def userinfo(token):
+    headers = {'authorization': token}
+    r = requests.get("https://discord.com/api/v10/users/@me", headers=headers)
+    if r.status_code == 200:
+        return r.json()["username"], True
+    else:
+        return "Invalid Token", False
 
-token = '' # put your token
-status = ["online", "idle", "dnd"] 
-sleep = 2 # change sleep
+def change_status(token, message, status):
+    headers = {'authorization': token}
+    settings = requests.get("https://discord.com/api/v10/users/@me/settings", headers=headers).json()
+    custom_status = settings.get("custom_status") or {}
+    custom_status["text"] = message
+    activities = [{"name": message, "type": 3 if status == "watching" else 0}]
+    jsonData = {"custom_status": custom_status, "activities": activities, "status": status}
+    requests.patch("https://discord.com/api/v10/users/@me/settings", headers=headers, json=jsonData)
 
-statuses = [ 
-    "test",
-    "test1",
-    "test2",
-    "test3", # Write your status
-    "test4",
-    "test5",
-    "test6"
-]
+token = ''  #Pone tu token aca anormal
+status_list = ["online", "idle", "dnd"]
+statuses = ["?", "?", "?", "?", "?", "?"] #Elige cualquier estado :Vvv
+sleep_time = 3 #Elige el tiempo que quieras, o nose jodete
 
-count = 0
-reset = time.time()
+def main():
+    while True:
+        for i, message in enumerate(statuses):
+            status = status_list[i % len(status_list)]
+            
+            user_name, valid = userinfo(token)
+            display_user = user_name if valid else f"{Fore.RED}Invalid Token"
 
-if not statuses:
-    print("Err: No statuses")
-    exit()   
+            print(f"[⛧] {display_user} | Status: {status} | Message: {message} ⛧")
+            change_status(token, message, status)
 
-banner()
+            time.sleep(sleep_time)
 
-while True:
-    new_status = status[count % len(status)]
-    log = statuses[count % len(statuses)]
+            
+            if i == len(statuses) - 1:
+                clear_console()
+                banner()
 
-    user_info, is_valid_token = userinfo(token)
-    usercolor = Fore.GREEN if is_valid_token else Fore.RED
-    token_info = f"{user_info}"
-    color2 = color(token_info, usercolor)
-    color3 = color(log, Fore.CYAN)
-
-    print(f"{Fore.CYAN}User changed: {color2} | → {color3} | Status: {new_status}")
-    change_status(token, log, new_status)
-    
-    count += 1
-
-    time_reset = time.time()
-
-    if time_reset - reset >= 10:
-        banner()
-        reset = time_reset
-
-    time.sleep(sleep)
+if __name__ == "__main__":
+    banner()
+    main()
