@@ -11,16 +11,19 @@ def clear_console():
 def banner():
     clear_console()
     print(f"""{Fore.RED}
-   ▄████████ ███▄▄▄▄       ███             ▄██████▄     ▄████████ ███▄▄▄▄      ▄██████▄  
-  ███    ███ ███▀▀▀██▄ ▀█████████▄        ███    ███   ███    ███ ███▀▀▀██▄   ███    ███ 
-  ███    █▀  ███   ███    ▀███▀▀██        ███    █▀    ███    ███ ███   ███   ███    █▀  
- ▄███▄▄▄     ███   ███     ███   ▀       ▄███          ███    ███ ███   ███  ▄███        
-▀▀███▀▀▀     ███   ███     ███          ▀▀███ ████▄  ▀███████████ ███   ███ ▀▀███ ████▄  
-  ███        ███   ███     ███            ███    ███   ███    ███ ███   ███   ███    ███ 
-  ███        ███   ███     ███            ███    ███   ███    ███ ███   ███   ███    ███ 
-  ███         ▀█   █▀     ▄████▀          ████████▀    ███    █▀   ▀█   █▀    ████████▀  
-
-                  {Fore.MAGENTA}Fnt Squad
+    __               __   ______  
+  _/  |_            /  | /      \ 
+ / $$   \   ______  $$ |/$$$$$$  |
+/$$$$$$  | /      \ $$ |$$ |_ $$/ 
+$$ \__$$/ /$$$$$$  |$$ |$$   |    
+$$      \ $$    $$ |$$ |$$$$/     
+ $$$$$$  |$$$$$$$$/ $$ |$$ |      
+/  \__$$ |$$       |$$ |$$ |      
+$$    $$/  $$$$$$$/ $$/ $$/       
+ $$$$$$/                          
+   $$/                            
+                                  
+                  {Fore.MAGENTA}Status Changer :,v
              {Fore.CYAN}Created by: Slfz
 {Fore.RESET}""")
 
@@ -41,9 +44,9 @@ def change_status(token, message, status):
     jsonData = {"custom_status": custom_status, "activities": activities, "status": status}
     requests.patch("https://discord.com/api/v10/users/@me/settings", headers=headers, json=jsonData)
 
-token = ''  #Pone tu token aca anormal
+token = ''  #Pone tu token aca anormal 
 status_list = ["online", "idle", "dnd"]
-statuses = ["?", "?", "?", "?", "?", "?"] #Elige cualquier estado :Vvv
+statuses = ["Test1", "Test2", "Test3"] #Elige cualquier estado :Vvv
 sleep_time = 3 #Elige el tiempo que quieras, o nose jodete
 
 def main():
